@@ -4,7 +4,7 @@ namespace App\Http\Requests\Plans;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlanStoreRequest extends FormRequest
+class LevelStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class PlanStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'plan_name' => 'required'
+            'plans_name' => 'required|max:255'
         ];
     }
 }

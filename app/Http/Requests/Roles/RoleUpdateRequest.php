@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Plans;
+namespace App\Http\Requests\Roles;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlanStoreRequest extends FormRequest
+class RoleUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class PlanStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'plan_name' => 'required'
+            'name' => 'required',
+            'permission' => 'required',
         ];
     }
 }

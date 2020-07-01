@@ -6,12 +6,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class Plan extends Authenticatable
+class Level_day extends Authenticatable
 {
     use Notifiable;
     use Uuid;
-    
-    protected $table = 'plans';
+    protected $table = "level_day";
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];
 
@@ -21,7 +20,7 @@ class Plan extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'plans_name',
+        'plan_id','level_name','day_no','day_name','no_of_round','first_defination','second_defination'
     ];
 
     protected static function boot()

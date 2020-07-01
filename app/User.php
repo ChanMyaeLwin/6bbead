@@ -43,4 +43,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($post) {
+            $post->{$post->getKeyName()} = (string) \Str::uuid();
+        });
+    }
+
+    public function getKeyType()
+    {
+        return 'string';
+    }
 }

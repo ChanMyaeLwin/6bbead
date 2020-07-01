@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CrateLevelDayTable extends Migration
+class CreateUserPlanTable extends Migration
 {
     use SoftDeletes;
     /**
@@ -15,19 +15,17 @@ class CrateLevelDayTable extends Migration
      */
     public function up()
     {
-        Schema::create('level_day', function (Blueprint $table) {
+        Schema::create('user_plan', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->integer('day_no');
+            $table->string('user_id');
             $table->string('plan_id');
-            $table->string('level_name');
-            $table->string('day_name');
-            $table->string('first_defination');
-            $table->string('second_defination');
-            $table->integer('no_of_round');
+            $table->datetime('start_date');
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
+         
         });
     }
 
@@ -38,6 +36,6 @@ class CrateLevelDayTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('level_day');
+        Schema::dropIfExists('user_plan');
     }
 }

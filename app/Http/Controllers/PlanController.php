@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Plans\PlanStoreRequest;
 use App\Http\Requests\Plans\PlanUpdateRequest;
+use App\Http\Requests\Plans\LevelStoreRequest;
+use App\Http\Requests\Plans\ChoosePlanRequest;
 use Illuminate\Http\Request;
 use App\Plan; 
+use App\LevelDay; 
+use App\UserPlan; 
 
 class PlanController extends Controller
 {
@@ -25,7 +29,7 @@ class PlanController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(Request $request)
-    {
+    {   
         $plans = Plan::orderBy('id','DESC')->paginate(5);
         return view('plans.index',compact('plans'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
@@ -39,7 +43,7 @@ class PlanController extends Controller
     public function create()
     {
         // if(\Auth::user()->can('super-admin')){
-            return view('plans.create');
+            return view('plans.create',compact('day_array'));
         // }
         // abort('404');
 
@@ -50,11 +54,12 @@ class PlanController extends Controller
     * @param Clinic $clinic
     * @return void
     */
-    public function show($id)
+    public function show($id,Request $request)
     {
-        
         $plan = Plan::findOrFail($id);
-        return view('plans.show',compact('plan'));
+        $levels = LevelDay::where('plan_id',$id)->orderby('level_name')
+        ->orderby('day_no')->get();
+        return view('plans.show',compact('plan','levels'));
     }
 
     /**
@@ -65,10 +70,9 @@ class PlanController extends Controller
      */
     public function store(planstoreRequest $request)
     {
-        // dd($request);
-            $plan = Plan::create($request->all());
-            return redirect()->route('plans.index')
-            ->with('success','Plan is created successfully');  
+        $plan = Plan::create(['plans_name' => $request['plan_name']]);
+        return redirect()->route('plans.index')
+        ->with('success','Plan is created successfully');  
     }
 
     public function edit($id){
@@ -84,19 +88,85 @@ class PlanController extends Controller
      */
     public function update(PlanUpdateRequest $request,$id)
     {
-            $plan = Plan::findOrFail($id);
-            $plan->fill($request->all())->save();
-            return redirect()->route('plans.index')
-            ->with('success','Plan is updated successfully');
-      }
+        $plan = Plan::findOrFail($id);
+        $plan->fill($request->all())->save();
+        return redirect()->route('plans.index')
+        ->with('success','Plan is updated successfully');
+    }
 
     public function destroy($id)
     {
-        $plan = Plan::findOrFail($id);
-        // dd($plan);
-        $plan = $plan->delete();
+        \DB::table("plans")->where('id',$id)->delete();
         return redirect()->route('plans.index')
-        ->with('success','Plan is delected successfully');
+                        ->with('success','Plan deleted successfully');
     }
 
+    public function createLevel($id){
+        // dd('aerw');
+        $day = [
+            ['id'=>'Sunday', 'name'=>'Sunday'],
+            ['id'=>'Monday', 'name'=>'Monday'],
+            ['id'=>'Tuesday', 'name'=>'Tuesday'],
+            ['id'=>'Wednesday', 'name'=>'Wednesday'],
+            ['id'=>'Thursday', 'name'=>'Thursday'],
+            ['id'=>'Friday', 'name'=>'Friday'],
+            ['id'=>'Saturday', 'name'=>'Saturday']
+        ];
+        $day_array = array(0=>'Select');
+        foreach ($day as $key => $value) {
+            // dd($value['id']);
+            $day_array += [
+                $value['id']=>$value['name']
+            ];
+        }
+        $plan = Plan::findOrFail($id);
+        return view('plans.addLevel',compact('plan','day_array'));
+    }
+
+    public function addLevel(LevelStoreRequest $request,$id)
+    {
+        // dd($request['level_name']);
+        $level = LevelDay::create([
+            'plan_id' => $request['plan_id'],
+            'level_name' => $request['level_name'],
+            'day_no' => $request['day_no'],
+            'day_name' => $request['day_name'],
+            'no_of_round' => $request['no_of_round'],
+            'first_defination' => $request['first_defination'],
+            'second_defination' => $request['second_defination'],
+        ]);
+        return redirect()->route('plans.index')
+        ->with('success','Level is Added successfully');
+    }
+
+    public function choosePlanView($id)
+    {
+        $plan = Plan::findOrFail($id);
+        return view('plans.choosePlan',compact('plan'));
+    }
+
+    public function choosePlan(ChoosePlanRequest $request,$id)
+    {
+        $level = UserPlan::create([
+            'plan_id' => $request['plan_id'],
+            'user_id' => Auth()->user()->id,
+            'start_date' => $request['start_date']
+        ]);
+        return redirect()->route('plans.choosedPlans')
+        ->with('success','Plan is choosed successfully');
+    }
+
+    public function choosedPlans(Request $request)
+    {   
+        $userplans = UserPlan::where('user_id',Auth()->user()->id)
+        ->with('plans')->paginate(5);
+        return view('plans.choosedPlan',compact('userplans'))
+            ->with('i', ($request->input('page', 1) - 1) * 5);
+    }
+
+    public function startPlan($id)
+    {
+        $plan = Plan::findOrFail($id);
+        return view('plans.choosePlan',compact('plan'));
+    }
 }

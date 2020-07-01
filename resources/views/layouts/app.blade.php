@@ -28,14 +28,38 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ '6b Bead' }}
                 </a>
-
+                <div class="dropdown">
+                    <button class="dropbtn">Admistration</button>
+                    <div class="dropdown-content">
+                        <a href="{{ url('/roles') }}">
+                            {{ 'Role and Permission' }}
+                        </a>
+                        <a href="{{ url('/users') }}">
+                            {{ 'Users' }}
+                        </a>
+                        <a href="{{ url('/assign_users') }}">
+                            {{ 'Users Assign' }}
+                        </a>             
+                    </div>
+                </div>
                 <a class="navbar-brand" href="{{ url('/articles') }}">
                     {{ 'Articles' }}
                 </a>
 
-                <a class="navbar-brand" href="{{ url('/plans') }}">
-                    {{ 'Plan' }}
-                </a>
+                <div class="dropdown">
+                    <button class="dropbtn">Plans</button>
+                    <div class="dropdown-content">
+                        <a href="{{ url('/plans') }}">
+                            {{ 'Plan' }}
+                        </a>
+                        <a href="{{ url('/choosedplans') }}">
+                            {{ 'Choosed Plan' }}
+                        </a>
+                       
+                    </div>
+                </div>
+
+                
                 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -93,4 +117,5 @@
         </main>
     </div>
 </body>
+@yield('script')
 </html>

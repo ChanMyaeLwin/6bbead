@@ -34,10 +34,9 @@
     <td>{{ $plan->plans_name }}</td>
     
     <td>
-       <a class="btn btn-info" href="{{ route('plans.choosePlanView',$plan->id) }}">Choose</a>
        <a class="btn btn-info" href="{{ route('plans.show',$plan->id) }}">Show</a>
        <a class="btn btn-primary" href="{{ route('plans.edit',$plan->id) }}">Edit</a>
-       <a class="btn btn-primary" href="{{ route('plans.createLevel',$plan->id) }}">Add Level</a>
+ 
         {!! Form::open(['method' => 'DELETE','route' => ['plans.destroy', $plan->id],'style'=>'display:inline']) !!}
             {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
         {!! Form::close() !!}

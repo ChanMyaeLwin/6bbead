@@ -4,19 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Permission as SpatiePermission;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Permission extends SpatiePermission
+class Permission extends Authenticatable
 {
-    use Uuid;
-    protected $primaryKey = 'id';
-    public $incrementing = false;
+    
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'string'
+    protected $fillable = [
+        'name','guard_name'
     ];
+   
 }

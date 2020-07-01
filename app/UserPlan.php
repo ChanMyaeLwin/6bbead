@@ -6,12 +6,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class Plan extends Authenticatable
+class UserPlan extends Authenticatable
 {
     use Notifiable;
     use Uuid;
-    
-    protected $table = 'plans';
+    protected $table = "user_plan";
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];
 
@@ -21,7 +20,7 @@ class Plan extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'plans_name',
+        'plan_id','user_id','start_date'
     ];
 
     protected static function boot()
@@ -36,6 +35,11 @@ class Plan extends Authenticatable
     public function getKeyType()
     {
         return 'string';
+    }
+
+    public function plans()
+    {
+        return $this->belongsTo(Plan::class,'plan_id')->select(array('id', 'plans_name'));
     }
 
 }

@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-lg-12 margin-tb">
         <div class="pull-left">
-            <h2>Create New Plan</h2>
+            <h2>Create New Clinic</h2>
         </div>
         <div class="pull-right">
             
@@ -28,30 +28,20 @@
 
 
 {!! Form::open(array('route' => 'plans.store','method'=>'POST')) !!}
-<!-- <form method="POST" id="frm_submit" > -->
-    	@csrf
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12" id="level">
-        <fieldset>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                <strong>Plan Name:</strong>
-                {!! Form::text('plan_name', null, array('placeholder' => '','class' => 'form-control')) !!}
-                </div>
-            </div>
-        </div>
-        </fieldset>
-    </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
-        <button type="submit"  id="btn_submit" class="btn btn-primary">Submit</button>
+        <div class="form-group">
+            <strong>Plan Name:</strong>
+            {!! Form::text('plans_name', null, array('placeholder' => '','class' => 'form-control')) !!}
+        </div>
+    </div>
+    
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <button type="submit" class="btn btn-primary">Submit</button>
         <a class="btn btn-primary" href="{{ route('plans.index') }}"> Back</a>
     </div>
 </div>
-<!-- </form> -->
 
 {!! Form::close() !!}
 
 @endsection
-
-
