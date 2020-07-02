@@ -17,6 +17,11 @@
   <p>{{ $message }}</p>
 </div>
 @endif
+@if ($message = Session::get('unsuccess'))
+<div class="alert alert-danger">
+  <p>{{ $message }}</p>
+</div>
+@endif
 
 
 <table class="table table-bordered">
@@ -33,7 +38,8 @@
     <td>{{ $userplan->plans->plans_name }}</td>
     
     <td>
-       <a class="btn btn-info" href="{{ route('plans.startPlan',$userplan->id) }}">Start Plan</a>
+       <a class="btn btn-info" href="{{ route('plans.startPlan',$userplan->plans->id) }}">Start Plan</a>
+       <a class="btn btn-info" href="{{ route('plans.viewPlanStatus',$userplan->plans->id) }}">View Plan Status</a>
     </td>
   </tr>
  @endforeach

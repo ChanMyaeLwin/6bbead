@@ -6,11 +6,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class LevelDay extends Authenticatable
+class UserDay extends Authenticatable
 {
     use Notifiable;
     use Uuid;
-    protected $table = "level_day";
+    protected $table = "user_days";
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];
 
@@ -20,7 +20,7 @@ class LevelDay extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'plan_id','level_name','day_no','day_name','no_of_round','first_defination','second_defination'
+        'level_day_id','user_id','start_time','end_time','status','day_no'
     ];
 
     protected static function boot()
@@ -37,9 +37,9 @@ class LevelDay extends Authenticatable
         return 'string';
     }
 
-    public function plans()
+    public function levelDays()
     {
-        return $this->belongsTo(Plan::class,'plan_id');
+        return $this->belongsTo(LevelDay::class,'level_day_id');
     }
 
 }

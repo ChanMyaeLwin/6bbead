@@ -9,7 +9,8 @@ use App\Http\Requests\Plans\ChoosePlanRequest;
 use Illuminate\Http\Request;
 use App\Plan; 
 use App\LevelDay; 
-use App\UserPlan; 
+use App\UserPlan;
+use App\UserDay;  
 
 class PlanController extends Controller
 {
@@ -147,13 +148,41 @@ class PlanController extends Controller
 
     public function choosePlan(ChoosePlanRequest $request,$id)
     {
-        $level = UserPlan::create([
-            'plan_id' => $request['plan_id'],
-            'user_id' => Auth()->user()->id,
-            'start_date' => $request['start_date']
-        ]);
-        return redirect()->route('plans.choosedPlans')
-        ->with('success','Plan is choosed successfully');
+        $dateIn = strtotime($request['start_date']);
+        $start_day = strtolower(date("l", $dateIn));
+        $planStartDay = LevelDay::where('day_no',1)->orderby('level_name')->first()->day_name;
+
+        if(strtoupper($planStartDay) == strtoupper($start_day))
+        {
+            UserPlan::create([
+                'plan_id' => $request['plan_id'],
+                'user_id' => Auth()->user()->id,
+                'start_date' => $request['start_date']
+            ]);
+
+            $levelDaysByPlanId = LevelDay::where('plan_id',$id)->orderby('level_name')
+            ->orderby('day_no')->get();
+            $i = 1;
+            foreach ($levelDaysByPlanId as $levelDay) {
+                
+                $level = UserDay::create([
+                    'day_no' => $i,
+                    'level_day_id' => $levelDay->id,
+                    'user_id' => Auth()->user()->id,
+                    'start_time' => null,
+                    'end_time' => null,
+                    'status' => 0,
+                    
+                ]);
+                $i +=1;
+            }
+        
+            return redirect()->route('plans.choosedPlans')
+            ->with('success','Plan is choosed successfully');
+        }else{
+            return redirect()->route('plans.choosePlanView',$id)
+            ->with('unsuccess','Plan is choosed unsuccessfully');
+        };
     }
 
     public function choosedPlans(Request $request)
@@ -166,7 +195,45 @@ class PlanController extends Controller
 
     public function startPlan($id)
     {
-        $plan = Plan::findOrFail($id);
-        return view('plans.choosePlan',compact('plan'));
+        $userplan =UserPlan::where('user_id',Auth()->user()->id)
+        ->where('plan_id',$id)->first();
+
+        $today = date("Y-m-d") ;
+        $startdate = $userplan['start_date'];
+        $diff = abs(strtotime($today) - strtotime($startdate));
+        $days =  round($diff/86400) +1;
+        $todayuserday = UserDay::where('day_no',$days)->with('levelDays')->first();
+        if($todayuserday->status == 0){
+            $plan = Plan::findOrFail($id);
+            return view('plans.startPlan',compact('todayuserday','plan'));
+        }else{
+            return redirect()->route('plans.choosedPlans',$id)
+            ->with('unsuccess','Today Job is Successfully Finished');
+        };
+    
+        
+    }
+
+    public function updatestatus(Request $request)
+    {
+        // dd('aa',$request['user_day_id']);
+        $userday = UserDay::findOrFail($request['user_day_id']);
+ 
+        if($userday) {
+            $userday->start_time = $request['start_time'];
+            $userday->end_time = $request['end_time'];
+            $userday->status = 1;
+            $userday->save();
+        }
+
+        return $userday;
+    }
+
+
+    public function viewPlanStatus($plan_id)
+    {;
+        $userdays = UserDay::with('levelDays')->orderby('day_no')->with('levelDays')->get();
+        $plan = Plan::findOrFail($plan_id);
+        return view('plans.viewPlanStatus',compact('userdays','plan'));
     }
 }

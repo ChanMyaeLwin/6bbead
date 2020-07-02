@@ -24,7 +24,11 @@
     </ul>
   </div>
 @endif
-
+@if ($message = Session::get('unsuccess'))
+<div class="alert alert-danger">
+  <p>{{ $message }}</p>
+</div>
+@endif
 
 {!! Form::model($plan, ['method' => 'PATCH','route' => ['plans.choosePlan', $plan->id]]) !!}
 <input type="hidden" id="plan_id" name="plan_id" value="{{$plan->id}}">

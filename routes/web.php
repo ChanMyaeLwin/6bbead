@@ -64,8 +64,9 @@ Route::patch('/plans/{id}/addLevel','PlanController@addLevel')->name('plans.addL
 Route::patch('/plans/{id}/update','PlanController@update')->name('plans.update');
 Route::delete('/plans/{id}/delete','PlanController@destroy')->name('plans.destroy');
 Route::get('/choosedplans', 'PlanController@choosedPlans')->name('plans.choosedPlans');
-Route::get('/startplan', 'PlanController@startPlan')->name('plans.startPlan');
-
+Route::get('/plans/{id}/startPlan','PlanController@startPlan')->name('plans.startPlan');
+Route::post('/updatestatus','PlanController@updatestatus')->name('plans.updatestatus');
+Route::get('/plans/{id}/viewPlanStatus','PlanController@viewPlanStatus')->name('plans.viewPlanStatus');
 //Article
 Route::get('/articles', 'ArticleController@index')->name('articles.index');
 Route::get('/articles/create', 'ArticleController@create')->name('articles.create');

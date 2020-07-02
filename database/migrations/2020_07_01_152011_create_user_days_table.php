@@ -19,8 +19,9 @@ class CreateUserDaysTable extends Migration
             $table->uuid('id')->primary();
             $table->string('user_id');
             $table->string('level_day_id');
-            $table->datetime('start_time');
-            $table->datetime('end_time');
+            $table->integer('day_no');
+            $table->datetime('start_time')->nullable();
+            $table->datetime('end_time')->nullable();
             $table->integer('status');
             $table->timestamps();
             $table->softDeletes();
